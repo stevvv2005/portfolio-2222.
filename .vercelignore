@@ -1,0 +1,7 @@
+.next
+node_modules
+*.log
+*.err.log
+dev-*.log
+prod-*.log
+server-*.log
