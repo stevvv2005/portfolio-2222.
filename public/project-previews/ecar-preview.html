@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>e-car remote preview</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #030812; color: #fff; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .screen { width: 960px; height: 640px; display: grid; grid-template-columns: 210px 1fr; background: #040b18; overflow: hidden; }
+      aside { border-right: 1px solid rgba(255,255,255,.1); background: #060d1a; padding: 22px; }
+      .brand { font-size: 18px; letter-spacing: .16em; margin-bottom: 34px; }
+      .nav { display: grid; gap: 12px; color: rgba(255,255,255,.55); font-size: 12px; }
+      .nav div { border: 1px solid rgba(255,255,255,.09); border-radius: 14px; padding: 12px; background: rgba(255,255,255,.04); }
+      main { padding: 22px; }
+      header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+      h1 { margin: 0; font-size: 28px; letter-spacing: -.04em; }
+      .pill { border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 9px 14px; color: rgba(255,255,255,.7); }
+      .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+      .card { border: 1px solid rgba(255,255,255,.1); border-radius: 18px; padding: 16px; background: rgba(255,255,255,.04); min-height: 120px; }
+      .label { color: rgba(255,255,255,.45); font-size: 11px; letter-spacing: .12em; }
+      .value { font-size: 34px; margin-top: 16px; letter-spacing: -.05em; }
+      .wide { grid-column: span 2; min-height: 250px; position: relative; overflow: hidden; }
+      .radar { position: absolute; inset: 30px; border: 1px solid rgba(255,255,255,.12); border-radius: 22px; background: radial-gradient(circle at center, rgba(255,255,255,.13), transparent 36%); }
+      .car { position: absolute; left: 50%; top: 50%; width: 92px; height: 150px; transform: translate(-50%,-50%); border: 1px solid rgba(255,255,255,.5); border-radius: 24px; }
+      .stop { background: #fff; color: #000; border-radius: 18px; display: grid; place-items: center; font-size: 24px; letter-spacing: .12em; }
+    </style>
+  </head>
+  <body>
+    <div class="screen">
+      <aside>
+        <div class="brand">e-car</div>
+        <div class="nav"><div>dashboard</div><div>camera</div><div>manual control</div><div>sensors</div><div>auto parking</div></div>
+      </aside>
+      <main>
+        <header><h1>remote control dashboard</h1><div class="pill">signal 92% · battery 78%</div></header>
+        <section class="grid">
+          <div class="card"><div class="label">front sensor</div><div class="value">1.6m</div></div>
+          <div class="card"><div class="label">motor temp</div><div class="value">42°</div></div>
+          <div class="card"><div class="label">gear</div><div class="value">p</div></div>
+          <div class="card wide"><div class="label">parking radar</div><div class="radar"><div class="car"></div></div></div>
+          <div class="card stop">emergency stop</div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

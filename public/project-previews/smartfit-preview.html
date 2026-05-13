@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartFit AI — Hackathon Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f5f2ee;
+      --white: #ffffff;
+      --ink: #111111;
+      --ink2: #444444;
+      --ink3: #888888;
+      --lime: #b8f53d;
+      --teal: #00897b;
+      --border: #e0dbd4;
+      --shadow: 0 2px 20px rgba(0,0,0,0.07);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px; line-height: 1.6; overflow-x: hidden;
+    }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(245,242,238,0.93);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem; height: 62px;
+    }
+    .logo {
+      font-family: 'Fraunces', serif; font-weight: 900; font-size: 1.2rem;
+      color: var(--ink); text-decoration: none;
+      display: flex; align-items: center; gap: 0.45rem;
+    }
+    .logo-dot { width: 9px; height: 9px; background: var(--lime); border-radius: 50%; display: inline-block; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { color: var(--ink2); text-decoration: none; font-size: 0.87rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+    .nav-badge {
+      background: var(--ink); color: var(--lime);
+      padding: 0.38rem 1rem; border-radius: 6px;
+      font-size: 0.8rem; font-weight: 600; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-badge:hover { background: var(--teal); color: #fff; }
+
+    .hero {
+      max-width: 1080px; margin: 0 auto;
+      padding: 5rem 3rem 4rem;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .hero-left { animation: up 0.65s ease both; }
+    .hero-right { animation: up 0.65s 0.14s ease both; }
+    @keyframes up { from { opacity:0; transform:translateY(26px); } to { opacity:1; transform:translateY(0); } }
+
+    .hackathon-tag {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      background: var(--lime); color: var(--ink);
+      padding: 0.32rem 0.85rem; border-radius: 4px;
+      font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 1.8rem;
+    }
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.6rem, 4.5vw, 4.2rem);
+      font-weight: 900; line-height: 1.06;
+      letter-spacing: -0.02em; margin-bottom: 1.4rem;
+    }
+    h1 em { font-style: italic; font-weight: 300; color: var(--teal); }
+    .hero-desc { color: var(--ink2); font-size: 1rem; line-height: 1.7; margin-bottom: 2.2rem; max-width: 400px; }
+    .hero-actions { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--ink); color: var(--lime);
+      padding: 0.8rem 1.8rem; border-radius: 8px;
+      font-weight: 600; font-size: 0.9rem; text-decoration: none;
+      border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .btn-primary:hover { background: var(--teal); color: #fff; transform: translateY(-2px); }
+    .btn-secondary {
+      background: transparent; color: var(--ink);
+      padding: 0.8rem 1.8rem; border-radius: 8px;
+      font-weight: 500; font-size: 0.9rem; text-decoration: none;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, background 0.2s;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .btn-secondary:hover { border-color: var(--ink); background: var(--white); }
+
+    .hero-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 18px; padding: 1.8rem; box-shadow: var(--shadow); position: relative;
+    }
+    .hero-card::before {
+      content: 'Aperçu IA';
+      position: absolute; top: -11px; left: 1.4rem;
+      background: var(--lime); color: var(--ink);
+      font-size: 0.67rem; font-weight: 700;
+      padding: 0.18rem 0.65rem; border-radius: 4px;
+      letter-spacing: 0.07em; text-transform: uppercase;
+    }
+    .card-title {
+      font-family: 'Fraunces', serif; font-size: 1rem;
+      font-weight: 700; margin-bottom: 1.1rem;
+    }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.1rem; }
+    .pill {
+      background: var(--bg); border: 1px solid var(--border);
+      padding: 0.25rem 0.7rem; border-radius: 50px;
+      font-size: 0.75rem; color: var(--ink2); font-weight: 500;
+    }
+    .pill.active { background: var(--lime); border-color: var(--lime); color: var(--ink); font-weight: 600; }
+    .mini-bar-wrap { margin-bottom: 0.7rem; }
+    .mini-bar-label { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--ink3); margin-bottom: 0.28rem; }
+    .mini-bar-bg { background: var(--bg); border-radius: 50px; height: 6px; }
+    .mini-bar-fill { height: 100%; border-radius: 50px; background: var(--teal); }
+    .mini-bar-fill.lime { background: var(--lime); }
+    .card-result {
+      background: var(--bg); border-radius: 8px;
+      padding: 0.75rem 0.9rem; margin-top: 0.9rem;
+      font-size: 0.8rem; color: var(--ink2); line-height: 1.5;
+    }
+    .card-result strong { color: var(--ink); }
+
+    .divider { border: none; border-top: 1px solid var(--border); max-width: 1080px; margin: 0 auto; }
+
+    .how-section { max-width: 1080px; margin: 0 auto; padding: 5rem 3rem; }
+    .section-eyebrow {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--teal); margin-bottom: 0.9rem; display: block;
+    }
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+      font-weight: 900; line-height: 1.1;
+      letter-spacing: -0.02em; margin-bottom: 3rem;
+    }
+    .section-title em { font-style: italic; font-weight: 300; color: var(--teal); }
+    .steps-list { display: flex; flex-direction: column; }
+    .step-row {
+      display: grid; grid-template-columns: 72px 1fr;
+      gap: 1.8rem; align-items: start;
+      padding: 1.8rem 0; border-bottom: 1px solid var(--border);
+    }
+    .step-row:first-child { border-top: 1px solid var(--border); }
+    .step-num-box {
+      width: 48px; height: 48px;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 900;
+      color: var(--ink3); transition: background 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .step-row:hover .step-num-box { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+    .step-content h3 { font-family: 'Fraunces', serif; font-size: 1.18rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .step-content p { color: var(--ink2); font-size: 0.9rem; line-height: 1.65; max-width: 480px; }
+
+    .features-section { background: var(--ink); color: #fff; padding: 5rem 3rem; }
+    .features-inner { max-width: 1080px; margin: 0 auto; }
+    .features-section .section-eyebrow { color: var(--lime); }
+    .features-section .section-title { color: #fff; }
+    .features-section .section-title em { color: var(--lime); }
+    .feat-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px; overflow: hidden;
+    }
+    .feat-item { background: var(--ink); padding: 1.8rem; transition: background 0.22s; }
+    .feat-item:hover { background: rgba(255,255,255,0.04); }
+    .feat-icon { font-size: 1.7rem; display: block; margin-bottom: 0.9rem; }
+    .feat-item h3 { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; color: #fff; }
+    .feat-item p { color: rgba(255,255,255,0.45); font-size: 0.83rem; line-height: 1.6; }
+
+    .cta-section {
+      max-width: 1080px; margin: 0 auto; padding: 5rem 3rem;
+      display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center;
+    }
+    .cta-section h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+      font-weight: 900; line-height: 1.1; letter-spacing: -0.02em;
+    }
+    .cta-section h2 em { font-style: italic; font-weight: 300; color: var(--teal); }
+
+    footer {
+      border-top: 1px solid var(--border); padding: 1.4rem 3rem;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    }
+    footer p { color: var(--ink3); font-size: 0.8rem; }
+    .footer-links { display: flex; gap: 1.4rem; }
+    .footer-links a { color: var(--ink3); text-decoration: none; font-size: 0.8rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--ink); }
+
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; gap: 2.5rem; padding: 3.5rem 1.5rem 3rem; }
+      .feat-grid { grid-template-columns: 1fr; }
+      .cta-section { grid-template-columns: 1fr; padding: 3.5rem 1.5rem; }
+      .how-section { padding: 3.5rem 1.5rem; }
+      .features-section { padding: 3.5rem 1.5rem; }
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+      footer { padding: 1.4rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="#" class="logo"><span class="logo-dot"></span>Se7ti_M3a_Jibi</a>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Accueil</a></li>
+    <li><a href="#">Sa7bi LcoAch</a></li>
+    <li><a href="#">Suivi</a></li>
+  </ul>
+  <a href="#" class="nav-badge">Essayer →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hackathon-tag">🏆 Projet Hackathon</div>
+    <h1>Atteins ton objectif avec <em>l'intelligence</em> artificielle</h1>
+    <p class="hero-desc">
+      Se7ti_3la_7sab_Jibi génère un plan nutrition et sport 100 % personnalisé selon ton profil, ton budget et tes contraintes de santé.
+    </p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Générer mon plan →</a>
+      <a href="#comment" class="btn-secondary">Comment ça marche</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-card">
+      <div class="card-title">🧠 Exemple de profil analysé</div>
+      <div class="pill-row">
+        <span class="pill active">Perte de poids</span>
+        <span class="pill">75 kg → 65 kg</span>
+        <span class="pill">3 mois</span>
+        <span class="pill">1 500 MAD/mois</span>
+      </div>
+      <div class="mini-bar-wrap">
+        <div class="mini-bar-label"><span>Progression estimée</span><span>Sem. 4 / 12</span></div>
+        <div class="mini-bar-bg"><div class="mini-bar-fill" style="width:33%"></div></div>
+      </div>
+      <div class="mini-bar-wrap">
+        <div class="mini-bar-label"><span>Calories journalières</span><span>1 750 kcal</span></div>
+        <div class="mini-bar-bg"><div class="mini-bar-fill lime" style="width:68%"></div></div>
+      </div>
+      <div class="card-result">
+        💬 <strong>IA :</strong> Objectif réaliste (~3,3 kg/mois). Programme recommandé : 4 séances/sem mixte cardio + musculation.
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<section class="how-section" id="comment">
+  <span class="section-eyebrow">Fonctionnement</span>
+  <h2 class="section-title reveal">Simple, rapide, <em>personnalisé</em></h2>
+  <div class="steps-list">
+    <div class="step-row reveal">
+      <div class="step-num-box">1</div>
+      <div class="step-content">
+        <h3>Tu remplis ton profil</h3>
+        <p>Âge, poids, taille, objectif, durée, budget et contraintes de santé. L'algorithme a besoin de ces données pour personnaliser ton plan.</p>
+      </div>
+    </div>
+    <div class="step-row reveal">
+      <div class="step-num-box">2</div>
+      <div class="step-content">
+        <h3>L'IA calcule tout</h3>
+        <p>Calcul du BMR, TDEE, macros et génération d'un programme sportif adapté à ton niveau.</p>
+      </div>
+    </div>
+    <div class="step-row reveal">
+      <div class="step-num-box">3</div>
+      <div class="step-content">
+        <h3>Tu consultes ton plan</h3>
+        <p>Plan nutrition repas par repas, programme sport semaine par semaine, estimation réaliste et alerte si l'objectif est trop ambitieux.</p>
+      </div>
+    </div>
+    <div class="step-row reveal">
+      <div class="step-num-box">4</div>
+      <div class="step-content">
+        <h3>Tu suis ton évolution</h3>
+        <p>Enregistre ton poids chaque semaine, visualise ta courbe de progression et reçois des retours automatiques selon ta trajectoire.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="features-section">
+  <div class="features-inner">
+    <span class="section-eyebrow">Fonctionnalités</span>
+    <h2 class="section-title reveal">Ce que fait <em>l'application</em></h2>
+    <div class="feat-grid">
+      <div class="feat-item reveal">
+        <span class="feat-icon">🥗</span>
+        <h3>Nutrition calculée</h3>
+        <p>Calories, macros et répartition par repas basées sur ta physiologie et ton budget alimentaire réel.</p>
+      </div>
+      <div class="feat-item reveal">
+        <span class="feat-icon">💪</span>
+        <h3>Programme sport adapté</h3>
+        <p>Cardio ou musculation selon ton objectif, avec ajustements si tu as des contraintes physiques.</p>
+      </div>
+      <div class="feat-item reveal">
+        <span class="feat-icon">📈</span>
+        <h3>Graphique d'évolution</h3>
+        <p>Courbe de poids hebdomadaire avec trajectoire idéale et comparaison de ta progression réelle.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="cta-section">
+  <h2 class="reveal">Prêt à générer ton plan <em>personnalisé</em> ?</h2>
+  <a href="#" class="btn-primary" style="white-space:nowrap; font-size:0.95rem; padding:0.9rem 2rem;">
+    Commencer →
+  </a>
+</section>
+
+<hr class="divider" />
+
+<footer>
+  <a href="#" class="logo"><span class="logo-dot"></span> SmartFit AI</a>
+  <p>Projet Hackathon — Algorithme de nutrition &amp; sport personnalisé</p>
+  <div class="footer-links">
+    <a href="#">Accueil</a>
+    <a href="#">Coach IA</a>
+    <a href="#">Suivi</a>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

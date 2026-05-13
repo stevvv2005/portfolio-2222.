@@ -1,763 +1,843 @@
 "use client";
 
-import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  ArrowUp,
-  BriefcaseBusiness,
-  Download,
-  GitBranch,
-  GraduationCap,
-  Mail,
-  MapPin,
-  Menu,
-  MonitorSmartphone,
-  Phone,
-  Rocket,
-  Send,
-  Sparkles,
-  Star,
-} from "lucide-react";
-import { useMemo, useState, type ComponentType } from "react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
-const profile = {
-  name: "BABA Oualid",
-  title: "Eleve ingenieur en informatique",
-  school: "ENSA Marrakech - 3e annee",
-  location: "Maroc",
-  phone: "+212 7 15 03 58 08",
-  email: "oualidbaba2005@gmail.com",
-  linkedin: "oualid-baba-2b29412a4",
-  cv: "/files/CV_Oualid_BABA_Engineering_ENSA_Marrakech.pdf",
-  intro:
-    "Eleve ingenieur en informatique a l'ENSA Marrakech, passionne par la resolution de problemes complexes, le developpement de solutions innovantes et les projets techniques concrets.",
-  about:
-    "Interesse par le developpement logiciel, la cybersecurite et l'analyse de donnees, je m'investis activement dans des projets afin de renforcer mes competences. Je recherche un stage afin de mettre en pratique mes acquis et contribuer a des projets concrets.",
-};
+const cvPath = "/files/CV_Oualid_BABA_Engineering_ENSA_Marrakech.pdf";
 
 const navLinks = [
-  ["Accueil", "#accueil"],
-  ["A propos", "#apropos"],
-  ["Competences", "#competences"],
-  ["Projets", "#projets"],
-  ["Formation", "#experiences"],
-  ["Contact", "#contact"],
+  ["projects", "#projects"],
+  ["skills", "#skills"],
+  ["about", "#about"],
+  ["contact", "#contact"],
 ] as const;
 
-const skillTabs = ["Langages", "Technologies", "Systemes", "Outils"] as const;
-const projectTabs = ["Tous", "Stages", "Academiques", "Cybersecurite"] as const;
+const projects = [
+  {
+    index: "01",
+    name: "e-car remote",
+    tags: ["react", "vite", "tailwind css", "framer motion"],
+    description: "realtime dashboard for a miniature electric car with telemetry, sensors, alerts and manual control",
+    year: "2026",
+    image: "/project-previews/e-car-remote.png",
+  },
+  {
+    index: "02",
+    name: "smartfit ai",
+    tags: ["html", "css", "javascript", "localstorage"],
+    description: "hackathon app for personalized fitness and nutrition based on profile, budget and health constraints",
+    year: "2026",
+    image: "/project-previews/smartfit-ai.png",
+  },
+  {
+    index: "03",
+    name: "ormvao markets",
+    tags: ["web app", "database modeling", "public procurement"],
+    description: "internship project for public procurement management with database modeling and core business features",
+    year: "2025",
+    image: "/project-previews/ormvao-markets.png",
+  },
+  {
+    index: "04",
+    name: "infochat sql agent",
+    tags: ["html", "php", "mysql", "select-only"],
+    description: "web chat interface connected to a php backend that validates sql and allows safe select queries",
+    year: "2026",
+    image: "/project-previews/sql-chatbot.png",
+  },
+  {
+    index: "05",
+    name: "mybank",
+    tags: ["php", "mysql", "secure auth"],
+    description: "banking management application with deposit, withdrawal, transfer and secure authentication flows",
+    year: "2025",
+    image: "/project-previews/mybank.png",
+  },
+] as const;
 
-const skillsByTab = {
-  Langages: [
-    { name: "C", mark: "C", level: 78 },
-    { name: "C++", mark: "C++", level: 76 },
-    { name: "Python", mark: "PY", level: 80 },
-    { name: "PHP", mark: "PHP", level: 74 },
-    { name: "JavaScript", mark: "JS", level: 84 },
-  ],
-  Technologies: [
-    { name: "Node.js", mark: "ND", level: 78 },
-    { name: "React.js", mark: "RE", level: 80 },
-    { name: "MySQL", mark: "SQL", level: 78 },
-    { name: "SQL", mark: "DB", level: 78 },
-    { name: "Web Apps", mark: "WEB", level: 82 },
-  ],
-  Systemes: [
-    { name: "Linux", mark: "LX", level: 82 },
-    { name: "Cybersecurite", mark: "CY", level: 82 },
-    { name: "Capture The Flag", mark: "CTF", level: 81 },
-    { name: "Analyse de vulnerabilites", mark: "SEC", level: 80 },
-    { name: "Analyse de donnees", mark: "DATA", level: 76 },
-  ],
-  Outils: [
-    { name: "Git", mark: "GIT", level: 88 },
-    { name: "GitHub", mark: "GH", level: 88 },
-    { name: "Photoshop", mark: "PS", level: 78 },
-    { name: "Illustrator", mark: "AI", level: 74 },
-    { name: "Algorithmique", mark: "ALG", level: 84 },
-  ],
-};
+const skills = [
+  ["javascript", "84%", "//advanced"],
+  ["react.js", "82%", "//proficient"],
+  ["node.js", "78%", "//proficient"],
+  ["python", "80%", "//proficient"],
+  ["php", "76%", "//proficient"],
+  ["sql/mysql", "78%", "//proficient"],
+  ["linux/cybersecurity", "82%", "//proficient"],
+  ["algorithmic problem solving", "84%", "//advanced"],
+] as const;
 
-const projectList = [
-  {
-    title: "ORMVAO - Gestion des marches publics",
-    type: "Stages",
-    period: "Aout 2025",
-    tags: ["Stage", "Application web", "Base de donnees"],
-    description:
-      "Conception et developpement d'une application web de gestion des marches publics: modelisation, base de donnees et implementation des fonctionnalites principales.",
-  },
-  {
-    title: "Chatbot connecte a une base SQL",
-    type: "Cybersecurite",
-    period: "Janvier 2026",
-    tags: ["SQL", "IA", "Cybersecurite"],
-    description:
-      "Projet Ateliers IA & cybersecurite: conception d'une base relationnelle, developpement du backend en PHP et integration du chatbot avec la base de donnees.",
-  },
-  {
-    title: "MYBank - ENSA Marrakech",
-    type: "Academiques",
-    period: "Mai 2025",
-    tags: ["PHP", "MySQL", "Securite"],
-    description:
-      "Application de gestion bancaire avec operations de depot, retrait, virement et authentification securisee.",
-  },
-  {
-    title: "Capture The Flag",
-    type: "Cybersecurite",
-    period: "2024 - Present",
-    tags: ["Linux", "CTF", "Vulnerabilites"],
-    description:
-      "Pratique de challenges CTF pour renforcer la logique systeme, l'analyse de vulnerabilites et les reflexes de securite.",
-  },
-  {
-    title: "Git & GitHub Labs",
-    type: "Academiques",
-    period: "2025",
-    tags: ["Git", "GitHub", "DataScience"],
-    description:
-      "Certification 365 DataScience et travaux pratiques autour du versioning, de la collaboration et des workflows Git.",
-  },
-  {
-    title: "Portfolio Engineering",
-    type: "Academiques",
-    period: "2026",
-    tags: ["Next.js", "React", "Tailwind"],
-    description:
-      "Portfolio personnel presentant le parcours ENSA, les projets techniques, les competences et les informations de contact.",
-  },
-];
+const tools = [
+  ["linux", "system"],
+  ["git & github", "versioning"],
+  ["tailwind css", "frontend"],
+  ["framer motion", "animation"],
+  ["vite", "build"],
+  ["mysql", "database"],
+  ["capture the flag", "security"],
+  ["photoshop", "design"],
+  ["illustrator", "design"],
+  ["php backend", "backend"],
+  ["database modeling", "analysis"],
+] as const;
 
-const timeline = [
+const values = [
   {
-    title: "Formation",
-    icon: GraduationCap,
-    entries: [
-      {
-        year: "2023 - Present",
-        heading: "Cycle preparatoire integre - Genie Informatique",
-        text: "ENSA Marrakech. Parcours d'ingenierie informatique avec bases solides en algorithmique, programmation, systemes et bases de donnees.",
+    title: "cybersecurity mindset",
+    body: "i treat vulnerabilities, authentication and data flow as core parts of the product",
+    icon: "shield",
+  },
+  {
+    title: "problem solving",
+    body: "i break complex requirements into clear steps, models and working features",
+    icon: "code",
+  },
+  {
+    title: "resilience",
+    body: "i keep learning through projects, ctf practice, teamwork and iteration",
+    icon: "infinity",
+  },
+] as const;
+
+function useInView<T extends HTMLElement>() {
+  const ref = useRef<T | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(entry.target);
+        }
       },
-      {
-        year: "2022 - 2023",
-        heading: "Baccalaureat Sciences Mathematiques A - Mention Tres Bien",
-        text: "Lycee Sidi Daoud - Ouarzazate.",
-      },
-    ],
-  },
-  {
-    title: "Projets & Experiences",
-    icon: BriefcaseBusiness,
-    entries: [
-      {
-        year: "Aout 2025",
-        heading: "Stage - ORMVAO Ouarzazate",
-        text: "Developpement d'une application de gestion des marches publics: conception, modelisation et implementation web.",
-      },
-      {
-        year: "Janvier 2026",
-        heading: "Chatbot SQL - Ateliers IA & cybersecurite",
-        text: "Conception d'une base relationnelle, backend PHP et integration du chatbot avec la base de donnees.",
-      },
-      {
-        year: "Mai 2025",
-        heading: "Projet MYBank - ENSA Marrakech",
-        text: "Application bancaire avec depot, retrait, virement et authentification securisee.",
-      },
-    ],
-  },
-];
+      { threshold: 0.15 },
+    );
 
-const highlights = [
-  {
-    title: "Certificats",
-    items: ["Git & GitHub - 365 DataScience", "ChatGPT for SQL - DataScience", "JavaScript Intermediate - HackerRank"],
-  },
-  {
-    title: "Langues",
-    items: ["Arabe: bilingue", "Francais: bilingue", "Anglais: courant professionnel"],
-  },
-  {
-    title: "Competences personnelles",
-    items: ["Esprit analytique", "Creativite", "Travail en equipe", "Gestion du temps", "Resilience"],
-  },
-];
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
-const artworkImages = {
-  dragon: "/solo/solo-1.jpg",
-  blade: "/solo/solo-2.jpg",
-  shadow: "/solo/solo-3.jpg",
-  chains: "/solo/solo-4.jpg",
-};
+  return { ref, visible };
+}
 
-const fadeIn = {
-  initial: { opacity: 0, y: 26 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.2 },
-  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const },
-};
+function Reveal({
+  children,
+  className = "",
+  delay = 0,
+}: Readonly<{ children: ReactNode; className?: string; delay?: number }>) {
+  const { ref, visible } = useInView<HTMLDivElement>();
 
-function SectionTag({ index, title }: { index: string; title: string }) {
   return (
-    <div className="mb-5 flex items-center gap-3">
-      <span className="section-index">{index}</span>
-      <div className="h-px flex-1 bg-[linear-gradient(90deg,rgba(150,101,255,0.8),rgba(150,101,255,0))]" />
-      <span className="text-[0.65rem] uppercase tracking-[0.32em] text-violet-300/70">{title}</span>
+    <div
+      ref={ref}
+      className={`${className} transition-all duration-[800ms] ${
+        visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+      }`}
+      style={{
+        transitionDelay: `${delay}ms`,
+        transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)",
+      }}
+    >
+      {children}
     </div>
   );
 }
 
-function Panel({
-  className,
-  image,
-  imageAlt = "",
-  children,
-}: Readonly<{
-  className?: string;
-  image?: string;
-  imageAlt?: string;
-  children: React.ReactNode;
-}>) {
+function GlobalStyles() {
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.textContent = `
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Readex+Pro:wght@300;400;500;600;700&display=swap');
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; cursor: none; }
+
+      ::selection { background: #fff; color: #000; }
+
+      html {
+        scroll-behavior: smooth;
+        background: #000;
+      }
+
+      body {
+        background: #000 !important;
+        color: #fff;
+        font-family: 'Readex Pro', system-ui, -apple-system, sans-serif !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .portfolio-shell {
+        background: #000;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .noise-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+        opacity: 0.4;
+      }
+
+      .section-label {
+        color: rgba(255,255,255,0.3);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+      }
+
+      .hero-title {
+        letter-spacing: -0.04em;
+        line-height: 0.92;
+      }
+
+      .magnetic {
+        transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+      }
+
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(28px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes blink {
+        0%, 46% { opacity: 1; }
+        47%, 100% { opacity: 0; }
+      }
+
+      @keyframes marquee {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+      }
+
+      .anim-word-1 { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+      .anim-word-2 { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
+      .anim-word-3 { animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.4s both; }
+      .anim-nav { animation: fadeIn 0.7s ease 0.05s both; }
+      .anim-desc { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.55s both; }
+      .anim-stat-1 { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s both; }
+      .anim-stat-2 { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s both; }
+      .anim-stat-3 { animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.6s both; }
+
+      .top-nav a {
+        color: rgba(255,255,255,0.65);
+        text-decoration: none;
+        transition: color 0.2s ease;
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+      }
+
+      .top-nav a:hover { color: #fff; }
+
+      .cv-btn {
+        background: #fff;
+        border: none;
+        border-radius: 9999px;
+        color: #000;
+        cursor: none;
+        display: inline-flex;
+        font-family: 'Readex Pro', system-ui, sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        padding: 12px 24px;
+        text-decoration: none;
+        transition: background 0.2s ease;
+        white-space: nowrap;
+      }
+
+      .cv-btn:hover { background: #e5e5e5; }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
+  return null;
+}
+
+function CustomCursor() {
+  const cursorRef = useRef<HTMLDivElement | null>(null);
+  const mouse = useRef({ x: -100, y: -100 });
+  const current = useRef({ x: -100, y: -100 });
+  const hovering = useRef(false);
+
+  useEffect(() => {
+    const onMouseMove = (event: MouseEvent) => {
+      mouse.current = { x: event.clientX, y: event.clientY };
+
+      const target = event.target as HTMLElement | null;
+      const magnetic = target?.closest(".magnetic") as HTMLElement | null;
+      if (magnetic) {
+        const rect = magnetic.getBoundingClientRect();
+        const x = (event.clientX - rect.left - rect.width / 2) * 0.18;
+        const y = (event.clientY - rect.top - rect.height / 2) * 0.18;
+        magnetic.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      }
+    };
+
+    const onMouseOver = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      hovering.current = Boolean(target?.closest("a, button, .magnetic, [data-cursor='hover']"));
+    };
+
+    const onMouseOut = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      const magnetic = target?.closest(".magnetic") as HTMLElement | null;
+      if (magnetic) magnetic.style.transform = "";
+    };
+
+    const animate = () => {
+      current.current.x += (mouse.current.x - current.current.x) * 0.18;
+      current.current.y += (mouse.current.y - current.current.y) * 0.18;
+      if (cursorRef.current) {
+        const isHovering = hovering.current;
+        cursorRef.current.style.transform = `translate3d(${current.current.x - (isHovering ? 20 : 4)}px, ${
+          current.current.y - (isHovering ? 20 : 4)
+        }px, 0) scale(1)`;
+        cursorRef.current.style.width = isHovering ? "40px" : "8px";
+        cursorRef.current.style.height = isHovering ? "40px" : "8px";
+        cursorRef.current.style.mixBlendMode = isHovering ? "difference" : "normal";
+      }
+      frame = requestAnimationFrame(animate);
+    };
+
+    let frame = requestAnimationFrame(animate);
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseover", onMouseOver);
+    window.addEventListener("mouseout", onMouseOut);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseover", onMouseOver);
+      window.removeEventListener("mouseout", onMouseOut);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
-    <section className={cn("panel-base", className)}>
-      {image ? <img src={image} alt={imageAlt} className="panel-bg-image" /> : null}
-      {image ? <div className="panel-bg-overlay" /> : null}
-      <div className="panel-content">{children}</div>
+    <div
+      ref={cursorRef}
+      className="pointer-events-none fixed left-0 top-0 z-[9999] rounded-full bg-white transition-[width,height] duration-300"
+    />
+  );
+}
+
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const update = () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? (window.scrollY / max) * 100 : 0);
+    };
+
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  return <div className="fixed left-0 top-0 z-[100] h-px bg-white" style={{ width: `${progress}%` }} />;
+}
+
+function LogoMark() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="11" height="11" stroke="white" strokeWidth="1.5" />
+      <rect x="16" y="1" width="11" height="11" stroke="white" strokeWidth="1.5" />
+      <rect x="1" y="16" width="11" height="11" stroke="white" strokeWidth="1.5" />
+      <rect x="16" y="16" width="11" height="11" fill="white" />
+    </svg>
+  );
+}
+
+function Icon({ name }: Readonly<{ name: "github" | "linkedin" | "mail" | "external" | "shield" | "code" | "infinity" }>) {
+  if (name === "github") {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+      </svg>
+    );
+  }
+  if (name === "linkedin") {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+        <rect x="2" y="9" width="4" height="12" />
+        <circle cx="4" cy="4" r="2" />
+      </svg>
+    );
+  }
+  if (name === "mail") {
+    return (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+        <polyline points="22,6 12,13 2,6" />
+      </svg>
+    );
+  }
+  if (name === "external") {
+    return (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+        <polyline points="15 3 21 3 21 9" />
+        <line x1="10" y1="14" x2="21" y2="3" />
+      </svg>
+    );
+  }
+  if (name === "shield") {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      </svg>
+    );
+  }
+  if (name === "code") {
+    return (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <polyline points="16 18 22 12 16 6" />
+        <polyline points="8 6 2 12 8 18" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <path d="M12 12c-2-2.5-4-4-6-4a4 4 0 0 0 0 8c2 0 4-1.5 6-4z" />
+      <path d="M12 12c2 2.5 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.5-6 4z" />
+    </svg>
+  );
+}
+
+function Hero() {
+  return (
+    <section id="home" className="relative h-screen w-full overflow-hidden bg-black">
+      <video
+        className="absolute inset-0 h-full w-full object-cover opacity-70"
+        autoPlay
+        loop
+        muted
+        playsInline
+        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_063509_7d167302-4fd4-480b-8260-18ab572333d4.mp4"
+      />
+
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-b from-transparent to-black" />
+
+      <nav className="top-nav anim-nav absolute left-0 right-0 top-0 z-20 flex items-center justify-between gap-4 px-6 pt-6 md:px-10">
+        <a
+          href="#home"
+          className="magnetic flex shrink-0 items-center gap-3 rounded-full py-3 pl-4 pr-6"
+          style={{ background: "rgba(23,23,23,0.9)", backdropFilter: "blur(14px)" }}
+        >
+          <LogoMark />
+          <span style={{ color: "#fff", fontSize: 14, fontWeight: 500, letterSpacing: "0.01em" }}>
+            oualid.baba
+          </span>
+        </a>
+
+        <div
+          className="hidden md:flex"
+          style={{
+            background: "rgba(23,23,23,0.9)",
+            backdropFilter: "blur(14px)",
+            borderRadius: 9999,
+            gap: 32,
+            padding: "12px 28px",
+          }}
+        >
+          {navLinks.map(([label, href]) => (
+            <a className="magnetic" key={label} href={href}>
+              {label}
+            </a>
+          ))}
+        </div>
+
+        <a className="cv-btn magnetic shrink-0" href={cvPath} target="_blank" rel="noreferrer">
+          download cv
+        </a>
+      </nav>
+
+      <span
+        className="hero-title anim-word-1 absolute font-medium text-white"
+        style={{ fontSize: "clamp(64px, 13vw, 13vw)", left: "clamp(16px, 2.5vw, 40px)", top: "18%" }}
+      >
+        student
+      </span>
+
+      <span
+        className="hero-title anim-word-2 absolute font-medium text-white"
+        style={{ fontSize: "clamp(64px, 12vw, 12vw)", right: "clamp(16px, 2.5vw, 40px)", top: "38%" }}
+      >
+        software
+      </span>
+
+      <span
+        className="hero-title anim-word-3 absolute font-medium text-white"
+        style={{ fontSize: "clamp(64px, 12vw, 12vw)", left: "clamp(10%, 22%, 22%)", top: "58%" }}
+      >
+        engineer
+      </span>
+
+      <p
+        className="anim-desc absolute"
+        style={{
+          color: "rgba(255,255,255,0.9)",
+          fontSize: 15,
+          fontWeight: 300,
+          left: "clamp(24px, 2.5vw, 40px)",
+          lineHeight: 1.45,
+          maxWidth: 300,
+          top: "46%",
+        }}
+      >
+        i build clean, secure and practical web applications with modern technologies.
+      </p>
+
+      <div className="anim-stat-1 absolute" style={{ right: "clamp(24px, 6vw, 96px)", textAlign: "right", top: "14%" }}>
+        <div style={{ fontSize: "clamp(36px, 4.5vw, 52px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1 }}>
+          5+
+        </div>
+        <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(11px, 1.1vw, 14px)", fontWeight: 300, marginTop: 4 }}>
+          cv projects
+        </div>
+        <div
+          className="hidden md:block"
+          style={{
+            background: "rgba(255,255,255,0.4)",
+            height: 1,
+            marginLeft: "auto",
+            marginTop: 16,
+            transform: "rotate(20deg)",
+            transformOrigin: "right center",
+            width: 96,
+          }}
+        />
+      </div>
+
+      <div className="anim-stat-2 absolute" style={{ bottom: "clamp(80px, 6vw, 96px)", left: "clamp(24px, 5vw, 80px)" }}>
+        <div style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1 }}>
+          10+
+        </div>
+        <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(11px, 1.1vw, 14px)", fontWeight: 300, marginTop: 4 }}>
+          technical skills
+        </div>
+      </div>
+
+      <div className="anim-stat-3 absolute" style={{ bottom: "clamp(64px, 5vw, 80px)", right: "clamp(24px, 5vw, 80px)", textAlign: "right" }}>
+        <div style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1 }}>
+          3e
+        </div>
+        <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(11px, 1.1vw, 14px)", fontWeight: 300, marginTop: 4 }}>
+          ensa marrakech
+        </div>
+      </div>
     </section>
   );
 }
 
-export default function Home() {
-  const [activeSkillTab, setActiveSkillTab] = useState<(typeof skillTabs)[number]>("Langages");
-  const [activeProjectTab, setActiveProjectTab] = useState<(typeof projectTabs)[number]>("Tous");
-  const [activeHighlight, setActiveHighlight] = useState(0);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+function Projects() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [active, setActive] = useState<number | null>(null);
+  const [preview, setPreview] = useState({ x: 0, y: 0 });
 
-  const aboutItems: Array<{ label: string; value: string; icon: ComponentType<{ className?: string }> }> = [
-    { label: "Nom", value: profile.name, icon: Sparkles },
-    { label: "Niveau", value: "3e annee", icon: Rocket },
-    { label: "Email", value: profile.email, icon: Mail },
-    { label: "Localisation", value: profile.location, icon: MapPin },
-  ];
-
-  const contactItems: Array<{ label: string; value: string; icon: ComponentType<{ className?: string }> }> = [
-    { label: "Email", value: profile.email, icon: Mail },
-    { label: "Telephone", value: profile.phone, icon: Phone },
-    { label: "Localisation", value: profile.location, icon: MapPin },
-    { label: "LinkedIn", value: profile.linkedin, icon: BriefcaseBusiness },
-  ];
-
-  const filteredProjects = useMemo(() => {
-    if (activeProjectTab === "Tous") {
-      return projectList.slice(0, 3);
-    }
-    return projectList.filter((project) => project.type === activeProjectTab).slice(0, 3);
-  }, [activeProjectTab]);
+  const onMove = (event: React.MouseEvent<HTMLElement>) => {
+    const bounds = sectionRef.current?.getBoundingClientRect();
+    if (!bounds) return;
+    setPreview({ x: event.clientX - bounds.left + 24, y: event.clientY - bounds.top - 80 });
+  };
 
   return (
-    <main className="portfolio-root">
-      <div className="page-orb page-orb-a" />
-      <div className="page-orb page-orb-b" />
-      <div className="page-noise" />
+    <section id="projects" ref={sectionRef} onMouseMove={onMove} className="relative min-h-screen bg-black px-6 py-32 md:px-16">
+      <Reveal>
+        <div className="flex items-center justify-between gap-8">
+          <span className="section-label">// 01 - selected work</span>
+          <span className="font-mono text-xs text-white/30">5 projects</span>
+        </div>
+        <h2 className="hero-title mb-20 mt-10 text-[7vw] font-medium text-white">projects.</h2>
+      </Reveal>
 
-      <div className="mx-auto max-w-[1680px] px-3 py-3 sm:px-4">
-        <motion.header
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45 }}
-          className="sticky top-3 z-50 mb-3"
-        >
-          <div className="nav-shell">
-            <a href="#accueil" className="flex items-center gap-3">
-              <div className="logo-mark">
-                <span>OB</span>
+      <div className="border-b border-t border-white/[0.08]">
+        {projects.map((project, index) => (
+          <Reveal key={project.name} delay={index * 80}>
+            <article
+              className="group magnetic flex items-start justify-between gap-6 border-t border-white/[0.08] py-8 transition-colors duration-500 first:border-t-0 hover:bg-white/[0.02] md:items-center md:py-10"
+              onMouseEnter={() => setActive(index)}
+              onMouseLeave={() => setActive(null)}
+              data-cursor="hover"
+            >
+              <div className="w-16 shrink-0 font-mono text-xs text-white/25">{project.index}</div>
+              <div className="flex-1">
+                <h3 className="text-2xl font-medium tracking-tight text-white md:text-4xl">{project.name}</h3>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span key={tag} className="rounded-full border border-white/10 px-3 py-1 text-[11px] text-white/45">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="hidden sm:block">
-                <p className="text-sm font-semibold text-white">BABA Oualid</p>
-                <p className="text-xs text-slate-400">Engineering Portfolio</p>
+              <p className="hidden w-48 text-sm font-light leading-relaxed text-white/50 md:block">{project.description}</p>
+              <div className="w-20 shrink-0 text-right md:w-32">
+                <div className="font-mono text-xs text-white/30">{project.year}</div>
+                <div className="mt-3 text-white/40 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white">
+                  <Icon name="external" />
+                </div>
               </div>
-            </a>
+            </article>
+          </Reveal>
+        ))}
+      </div>
 
-            <div className="hidden items-center gap-1 lg:flex">
-              {navLinks.map(([label, href]) => (
-                <a key={href} href={href} className="nav-link">
-                  {label}
-                </a>
+      <div
+        className="pointer-events-none absolute hidden h-[160px] w-[240px] overflow-hidden rounded-lg border border-white/10 bg-[#0a0a0a] transition-opacity duration-300 md:block"
+        style={{
+          left: `${preview.x}px`,
+          top: `${preview.y}px`,
+          opacity: active === null ? 0 : 1,
+        }}
+      >
+        {active !== null ? <img src={projects[active].image} alt="" className="h-full w-full object-cover opacity-80" /> : null}
+      </div>
+    </section>
+  );
+}
+
+function SkillBar({ name, width, level, index }: Readonly<{ name: string; width: string; level: string; index: number }>) {
+  const { ref, visible } = useInView<HTMLDivElement>();
+
+  return (
+    <div ref={ref} className="flex items-center py-5">
+      <span className="w-28 text-sm font-medium text-white md:w-36">{name}</span>
+      <div className="mx-6 h-px flex-1 bg-white/[0.08]">
+        <span
+          className="block h-px bg-white transition-all duration-1000"
+          style={{
+            width: visible ? width : "0%",
+            transitionDelay: `${index * 80}ms`,
+            transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)",
+          }}
+        />
+      </div>
+      <span className="font-mono text-[10px] text-white/30">{level}</span>
+    </div>
+  );
+}
+
+function Skills() {
+  return (
+    <section id="skills" className="bg-[#050505] px-6 py-32 md:px-16">
+      <Reveal>
+        <div className="flex items-center justify-between gap-8">
+          <span className="section-label">// 02 - expertise</span>
+          <span className="font-mono text-xs text-white/30">stack and workflow</span>
+        </div>
+        <h2 className="hero-title mt-10 text-[7vw] font-medium text-white">skills.</h2>
+      </Reveal>
+
+      <div className="mt-20 grid grid-cols-1 gap-16 md:grid-cols-[1fr_1px_1fr] md:gap-16">
+        <Reveal delay={80}>
+          <div>
+            <span className="section-label">// languages & frameworks</span>
+            <div className="mt-6">
+              {skills.map(([name, width, level], index) => (
+                <SkillBar key={name} name={name} width={width} level={level} index={index} />
               ))}
             </div>
-
-            <div className="flex items-center gap-2">
-              <Button asChild className="hero-button hidden sm:inline-flex">
-                <a href={profile.cv} download>
-                  Telecharger CV
-                  <Download className="h-4 w-4" />
-                </a>
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="border-white/10 bg-white/5 text-white lg:hidden"
-                onClick={() => setMobileMenuOpen((value) => !value)}
-                aria-label="Ouvrir le menu"
-              >
-                <Menu className="h-4 w-4" />
-              </Button>
-            </div>
           </div>
+        </Reveal>
 
-          {mobileMenuOpen ? (
-            <div className="mt-2 rounded-[22px] border border-white/10 bg-[#090815]/95 p-3 backdrop-blur-xl lg:hidden">
-              <div className="flex flex-col gap-1">
-                {navLinks.map(([label, href]) => (
-                  <a key={href} href={href} className="nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    {label}
-                  </a>
-                ))}
-              </div>
-            </div>
-          ) : null}
-        </motion.header>
+        <div className="hidden bg-white/[0.08] md:block" />
 
-        <div className="grid gap-3">
-          <motion.div {...fadeIn} id="accueil">
-            <Panel className="panel-hero" image={artworkImages.dragon} imageAlt="Solo Leveling purple artwork">
-              <SectionTag index="01" title="Eleve ingenieur" />
-              <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <p className="mb-4 text-xl font-light text-slate-100 sm:text-3xl">Bonjour, je suis</p>
-                    <h1 className="text-5xl font-black leading-none text-violet-400 sm:text-7xl">{profile.name}</h1>
-                    <p className="mt-4 max-w-xl text-lg leading-8 text-slate-200">
-                      {profile.title} | {profile.school}
-                    </p>
-                    <p className="mt-5 max-w-xl text-sm leading-7 text-slate-400">{profile.intro}</p>
-                  </div>
-
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    <Button className="hero-button" asChild>
-                      <a href="#projets">
-                        Voir mes projets
-                        <ArrowRight className="h-4 w-4" />
-                      </a>
-                    </Button>
-                    <Button variant="outline" className="hero-outline" asChild>
-                      <a href="#contact">Me contacter</a>
-                    </Button>
-                  </div>
-
-                  <div className="mt-8 flex items-center gap-5 text-slate-400">
-                    <a href="https://github.com" target="_blank" rel="noreferrer" className="social-link" aria-label="GitHub">
-                      <GitBranch className="h-5 w-5" />
-                    </a>
-                    <a href={`https://www.linkedin.com/in/${profile.linkedin}`} target="_blank" rel="noreferrer" className="social-link" aria-label="LinkedIn">
-                      <BriefcaseBusiness className="h-5 w-5" />
-                    </a>
-                    <a href={`mailto:${profile.email}`} className="social-link" aria-label="Email">
-                      <Mail className="h-5 w-5" />
-                    </a>
-                  </div>
-
-                  <p className="mt-7 text-[0.68rem] uppercase tracking-[0.34em] text-fuchsia-400/80">
-                    Informatique + web + cybersecurite
-                  </p>
-                </div>
-
-                <div className="hidden lg:block" />
-              </div>
-            </Panel>
-          </motion.div>
-
-          <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.08 }} id="apropos">
-            <Panel className="panel-about" image={artworkImages.shadow} imageAlt="Solo Leveling shadow artwork">
-              <SectionTag index="02" title="A propos" />
-              <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-                <div className="flex flex-col justify-between">
-                  <div>
-                    <h2 className="text-4xl font-bold text-white sm:text-5xl">
-                      A propos de <span className="text-violet-400">moi</span>
-                    </h2>
-                    <p className="mt-5 text-lg leading-8 text-slate-200">{profile.about}</p>
-                    <p className="mt-4 text-sm leading-7 text-slate-400">
-                      Objectif actuel: obtenir un stage pour appliquer mes acquis, progresser en environnement professionnel et contribuer a des solutions utiles.
-                    </p>
-                  </div>
-
-                  <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                    {aboutItems.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <div key={item.label} className="info-card">
-                          <Icon className="h-4 w-4 text-violet-400" />
-                          <div>
-                            <p className="text-xs text-slate-400">{item.label}</p>
-                            <p className="text-sm text-slate-100">{item.value}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <Button asChild className="hero-button mt-6 w-fit">
-                    <a href={profile.cv} download>
-                      Telecharger mon CV
-                      <Download className="h-4 w-4" />
-                    </a>
-                  </Button>
-
-                  <p className="mt-6 text-[0.68rem] uppercase tracking-[0.34em] text-fuchsia-400/80">
-                    ENSA Marrakech - Genie Informatique
-                  </p>
-                </div>
-
-                <div className="hidden lg:block" />
-              </div>
-            </Panel>
-          </motion.div>
-
-          <motion.div {...fadeIn} id="competences">
-            <Panel image={artworkImages.chains} imageAlt="Solo Leveling purple eyes artwork">
-              <SectionTag index="03" title="Competences" />
-              <div className="flex flex-col gap-6">
-                <div className="flex items-end justify-between gap-4">
-                  <h2 className="text-4xl font-bold text-white">
-                    Mes <span className="text-violet-400">competences</span>
-                  </h2>
-                  <p className="hidden text-[0.68rem] uppercase tracking-[0.34em] text-fuchsia-400/80 md:block">
-                    Langages, technologies, systemes et outils
-                  </p>
-                </div>
-
-                <div className="tab-row">
-                  {skillTabs.map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      onClick={() => setActiveSkillTab(tab)}
-                      className={cn("tab-button", activeSkillTab === tab && "tab-button-active")}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-                  {skillsByTab[activeSkillTab].map((skill, index) => (
-                    <div key={skill.name} className="skill-card" style={{ animationDelay: `${index * 120}ms` }}>
-                      <div className="skill-badge">{skill.mark}</div>
-                      <h3 className="mt-4 text-lg font-semibold text-white">{skill.name}</h3>
-                      <p className="mt-3 text-sm text-violet-300">{skill.level}%</p>
-                      <div className="skill-meter">
-                        <span style={{ width: `${skill.level}%` }} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="grid gap-3 md:grid-cols-4">
-                  {[
-                    ["Methodes", "Algorithmique, resolution de problemes et analyse de vulnerabilites."],
-                    ["Cybersecurite", "Linux, CTF, logique systeme et securisation des applications."],
-                    ["Developpement", "Applications web avec React.js, Node.js, PHP, SQL et MySQL."],
-                    ["Design", "Creation visuelle avec Photoshop et Illustrator."],
-                  ].map(([title, text]) => (
-                    <div key={title} className="feature-card">
-                      <MonitorSmartphone className="h-5 w-5 text-violet-400" />
-                      <h3 className="mt-4 text-base font-semibold text-white">{title}</h3>
-                      <p className="mt-2 text-sm leading-6 text-slate-400">{text}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Panel>
-          </motion.div>
-
-          <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.08 }} id="projets">
-            <Panel image={artworkImages.dragon} imageAlt="Solo Leveling energy artwork">
-              <SectionTag index="04" title="Projets" />
-              <div className="flex flex-col gap-6">
-                <div className="flex items-end justify-between gap-4">
-                  <h2 className="text-4xl font-bold text-white">
-                    Mes <span className="text-violet-400">projets</span>
-                  </h2>
-                  <p className="hidden text-[0.68rem] uppercase tracking-[0.34em] text-fuchsia-400/80 md:block">
-                    Stages, projets academiques et cybersecurite
-                  </p>
-                </div>
-
-                <div className="tab-row">
-                  {projectTabs.map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      onClick={() => setActiveProjectTab(tab)}
-                      className={cn("tab-button", activeProjectTab === tab && "tab-button-active")}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="grid gap-4 xl:grid-cols-3">
-                  {filteredProjects.map((project, index) => (
-                    <article key={project.title} className="project-card" style={{ animationDelay: `${index * 90}ms` }}>
-                      <div
-                        className="project-visual"
-                        style={{ backgroundImage: `url(${[artworkImages.blade, artworkImages.dragon, artworkImages.shadow][index % 3]})` }}
-                      >
-                        <div className="project-portal" />
-                      </div>
-                      <div className="p-4">
-                        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-violet-300">{project.period}</p>
-                        <h3 className="text-2xl font-semibold text-white">{project.title}</h3>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {project.tags.map((tag) => (
-                            <span key={tag} className="project-tag">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                        <p className="mt-4 text-sm leading-6 text-slate-400">{project.description}</p>
-                        <a href="#contact" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-violet-400">
-                          Me contacter
-                          <ArrowRight className="h-4 w-4" />
-                        </a>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-
-                <Button className="hero-button mx-auto mt-2 w-fit px-8" asChild>
-                  <a href={profile.cv} download>
-                    Voir le CV complet
-                    <Send className="h-4 w-4" />
-                  </a>
-                </Button>
-              </div>
-            </Panel>
-          </motion.div>
-
-          <motion.div {...fadeIn} id="experiences">
-            <Panel image={artworkImages.blade} imageAlt="Solo Leveling blade artwork">
-              <SectionTag index="05" title="Formation & experience" />
-              <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-                <div>
-                  <h2 className="text-4xl font-bold text-white">
-                    Formation & <span className="text-violet-400">experiences</span>
-                  </h2>
-                  <div className="mt-8 space-y-7">
-                    {timeline.map((group) => {
-                      const Icon = group.icon;
-                      return (
-                        <div key={group.title} className="timeline-group">
-                          <div className="timeline-icon">
-                            <Icon className="h-4 w-4" />
-                          </div>
-                          <div className="timeline-content">
-                            <h3 className="text-lg font-semibold text-violet-300">{group.title}</h3>
-                            <div className="mt-4 space-y-5">
-                              {group.entries.map((entry) => (
-                                <div key={`${group.title}-${entry.heading}`}>
-                                  <p className="text-sm font-semibold text-violet-400">{entry.year}</p>
-                                  <h4 className="mt-1 text-base font-semibold text-white">{entry.heading}</h4>
-                                  <p className="mt-1 text-sm leading-6 text-slate-400">{entry.text}</p>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="flex flex-col justify-between gap-5">
-                  <div className="hidden lg:block" />
-                  <p className="text-[0.68rem] uppercase tracking-[0.34em] text-fuchsia-400/80">
-                    ENSA Marrakech - Ouarzazate
-                  </p>
-                </div>
-              </div>
-            </Panel>
-          </motion.div>
-
-          <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.08 }}>
-            <Panel image={artworkImages.chains} imageAlt="Solo Leveling purple shadow artwork">
-              <SectionTag index="06" title="Certificats & langues" />
-              <div className="flex flex-col gap-6">
-                <div className="flex items-end justify-between gap-4">
-                  <h2 className="text-4xl font-bold text-white">
-                    Points <span className="text-violet-400">forts</span>
-                  </h2>
-                  <p className="hidden text-[0.68rem] uppercase tracking-[0.34em] text-fuchsia-400/80 md:block">
-                    Certificats, langues et competences personnelles
-                  </p>
-                </div>
-
-                <div className="grid gap-4 lg:grid-cols-3">
-                  {highlights.map((item, index) => (
-                    <article key={item.title} className={cn("testimonial-card", activeHighlight === index ? "testimonial-card-active" : "")}>
-                      <div className="flex items-center gap-4">
-                        <div className="avatar-ring">
-                          <Star className="h-5 w-5 fill-current text-violet-300" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-white">{item.title}</h3>
-                          <p className="text-sm text-slate-400">{index === 0 ? "Apprentissage continu" : index === 1 ? "Communication" : "Savoir-etre"}</p>
-                        </div>
-                      </div>
-                      <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-300">
-                        {item.items.map((line) => (
-                          <li key={line} className="flex gap-2">
-                            <span className="text-violet-400">-</span>
-                            <span>{line}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </article>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      className="slider-arrow"
-                      onClick={() => setActiveHighlight((value) => (value === 0 ? highlights.length - 1 : value - 1))}
-                    >
-                      {"<"}
-                    </button>
-                    <button
-                      type="button"
-                      className="slider-arrow"
-                      onClick={() => setActiveHighlight((value) => (value === highlights.length - 1 ? 0 : value + 1))}
-                    >
-                      {">"}
-                    </button>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    {highlights.map((item, index) => (
-                      <button
-                        key={item.title}
-                        type="button"
-                        onClick={() => setActiveHighlight(index)}
-                        className={cn("slider-dot", activeHighlight === index && "slider-dot-active")}
-                        aria-label={`Afficher ${item.title}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </Panel>
-          </motion.div>
-
-          <motion.div {...fadeIn} id="contact">
-            <Panel image={artworkImages.shadow} imageAlt="Solo Leveling aura artwork">
-              <SectionTag index="07" title="Contact" />
-              <div className="grid gap-6 lg:grid-cols-[0.72fr_1.28fr]">
-                <div>
-                  <h2 className="text-4xl font-bold text-white">
-                    Contactez-<span className="text-violet-400">moi</span>
-                  </h2>
-                  <div className="mt-8 space-y-4">
-                    {contactItems.map((item) => {
-                      const Icon = item.icon;
-                      return (
-                        <div key={item.label} className="contact-item">
-                          <div className="contact-icon">
-                            <Icon className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-violet-300">{item.label}</p>
-                            <p className="text-sm text-slate-400">{item.value}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div>
-                  <p className="mb-6 text-[0.68rem] uppercase tracking-[0.34em] text-fuchsia-400/80">
-                    Disponible pour stage et opportunites techniques
-                  </p>
-                  <form className="space-y-4">
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <input className="contact-input" type="text" placeholder="Nom" />
-                      <input className="contact-input" type="email" placeholder="Email" />
-                    </div>
-                    <input className="contact-input" type="text" placeholder="Sujet" />
-                    <textarea className="contact-input min-h-[150px] resize-none" placeholder="Message" />
-                    <Button asChild className="hero-button w-full md:w-fit">
-                      <a href={`mailto:${profile.email}`}>
-                        Envoyer le message
-                        <Send className="h-4 w-4" />
-                      </a>
-                    </Button>
-                  </form>
-                </div>
-              </div>
-            </Panel>
-          </motion.div>
-
-          <motion.div {...fadeIn} transition={{ ...fadeIn.transition, delay: 0.08 }}>
-            <Panel className="overflow-hidden" image={artworkImages.dragon} imageAlt="Solo Leveling thank you artwork">
-              <SectionTag index="08" title="Merci" />
-              <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-                <div className="flex flex-col justify-center">
-                  <h2 className="text-5xl font-black text-white sm:text-7xl">Merci !</h2>
-                  <p className="mt-5 max-w-md text-sm leading-7 text-slate-300">
-                    Merci d'avoir visite mon portfolio. Je suis ouvert aux stages, projets techniques et opportunites en developpement logiciel, web et cybersecurite.
-                  </p>
-                  <Button className="hero-button mt-8 w-fit" asChild>
-                    <a href="#accueil">
-                      Retour en haut
-                      <ArrowUp className="h-4 w-4" />
-                    </a>
-                  </Button>
-                </div>
-                <div className="hidden lg:block" />
-              </div>
-            </Panel>
-          </motion.div>
-        </div>
-
-        <footer className="footer-shell">
+        <Reveal delay={160}>
           <div>
-            <p className="text-2xl font-semibold text-white">BABA</p>
-            <p className="-mt-1 text-2xl font-light text-violet-300">Oualid</p>
+            <span className="section-label">// tools & environment</span>
+            <div className="mt-6 rounded-xl border border-white/[0.08] bg-black p-6 font-mono text-sm">
+              <div className="mb-4 text-xs text-white/25">~/oualid/toolchain $ ls -la</div>
+              {tools.map(([tool, category], index) => (
+                <div key={tool} className="flex gap-4 py-1 text-white/60 transition-colors hover:text-white">
+                  <span className="w-6 text-white/20">{index + 1}</span>
+                  <span className="w-24 text-white/30">drwxr-xr-x</span>
+                  <span>{tool}</span>
+                  <span className="ml-auto text-xs text-white/20">{category}</span>
+                </div>
+              ))}
+              <div className="mt-4 text-white/60">
+                <span style={{ animation: "blink 1s steps(1) infinite" }}>_</span>
+              </div>
+            </div>
           </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
-          <div className="flex items-center gap-4 text-slate-400">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="social-link" aria-label="GitHub">
-              <GitBranch className="h-5 w-5" />
-            </a>
-            <a href={`https://www.linkedin.com/in/${profile.linkedin}`} target="_blank" rel="noreferrer" className="social-link" aria-label="LinkedIn">
-              <BriefcaseBusiness className="h-5 w-5" />
-            </a>
-            <a href={`mailto:${profile.email}`} className="social-link" aria-label="Email">
-              <Mail className="h-5 w-5" />
-            </a>
-          </div>
+function About() {
+  const marquee =
+    "engineering student * open to internship * based in morocco * ensa marrakech * cybersecurity-focused * data analysis * ";
 
-          <p className="text-center text-sm text-slate-500">© 2026 {profile.name}. Tous droits reserves.</p>
+  return (
+    <section id="about" className="bg-black px-6 py-32 md:px-16">
+      <div className="mb-24 overflow-hidden border-y border-white/[0.08] py-5">
+        <div className="flex w-max whitespace-nowrap font-mono text-sm text-white/30" style={{ animation: "marquee 20s linear infinite" }}>
+          <span>{marquee}</span>
+          <span>{marquee}</span>
+        </div>
+      </div>
 
-          <div className="hidden gap-5 text-sm text-slate-400 md:flex">
-            {navLinks.slice(0, 4).map(([label, href]) => (
-              <a key={href} href={href} className="transition hover:text-violet-300">
-                {label}
-              </a>
+      <div className="grid grid-cols-1 items-start gap-20 md:grid-cols-2">
+        <Reveal>
+          <span className="section-label">// 03 - about</span>
+          <h2 className="hero-title mt-10 text-[12vw] font-medium text-white md:text-[6vw]">who i am.</h2>
+          <p className="mt-8 text-base font-light leading-[1.75] text-white/65 md:text-lg">
+            i&apos;m a computer engineering student at ensa marrakech, based in morocco and focused on software development,
+            cybersecurity and data analysis. i build practical web applications, dashboards and database-driven tools from
+            concrete requirements. currently seeking an internship where i can apply my skills to real technical projects.
+          </p>
+        </Reveal>
+
+        <Reveal delay={120}>
+          <div>
+            {[
+              ["3e", "ensa year"],
+              ["5+", "cv projects"],
+              ["2026", "latest work"],
+              ["morocco", "based in"],
+            ].map(([value, label]) => (
+              <div key={label} className="border-t border-white/[0.08] pb-6 pt-6">
+                <div className="font-mono text-[12vw] font-light leading-none text-white md:text-[3.5vw]">{value}</div>
+                <div className="section-label mt-1">{label}</div>
+              </div>
             ))}
           </div>
-
-          <a href="#accueil" className="back-top">
-            <ArrowUp className="h-4 w-4" />
-          </a>
-        </footer>
+        </Reveal>
       </div>
-    </main>
+
+      <Reveal delay={180}>
+        <div className="mt-16 grid grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.08] md:grid-cols-3">
+          {values.map((value) => (
+            <div key={value.title} className="bg-black p-6 transition-colors hover:bg-white/[0.03]">
+              <div className="text-white/40">
+                <Icon name={value.icon} />
+              </div>
+              <h3 className="mt-4 text-sm font-medium text-white">{value.title}</h3>
+              <p className="mt-1 text-xs font-light leading-relaxed text-white/45">{value.body}</p>
+            </div>
+          ))}
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
+function ContactLink({ href, label }: Readonly<{ href: string; label: string }>) {
+  return (
+    <a
+      href={href}
+      target={href.startsWith("http") ? "_blank" : undefined}
+      rel={href.startsWith("http") ? "noreferrer" : undefined}
+      className="group magnetic flex items-center gap-3 font-mono text-sm text-white/50 transition-colors duration-300 hover:text-white"
+    >
+      <span className="h-px w-8 bg-white/20 transition-all duration-300 group-hover:w-12 group-hover:bg-white" />
+      {label}
+      <span className="opacity-0 transition-opacity group-hover:opacity-100">
+        <Icon name="external" />
+      </span>
+    </a>
+  );
+}
+
+function Contact() {
+  return (
+    <section id="contact" className="bg-black px-6 py-40 text-center md:px-16">
+      <Reveal>
+        <div className="mb-12 inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
+          <span className="font-mono text-xs text-white/50">available for internship - 2026</span>
+        </div>
+
+        <h2 className="hero-title text-[10vw] font-medium text-white md:text-[7vw]">
+          {["let's", "build", "something."].map((word) => (
+            <span key={word} className="inline-block transition-transform duration-300 hover:skew-x-[-3deg]">
+              {word}&nbsp;
+            </span>
+          ))}
+        </h2>
+
+        <p className="mx-auto mt-6 max-w-lg text-sm font-light leading-relaxed text-white/45 md:text-base">
+          open to internships, technical projects and meaningful collaborations.
+        </p>
+
+        <div className="mt-16 flex flex-col items-center justify-center gap-6 md:flex-row">
+          <ContactLink href="mailto:oualidbaba2005@gmail.com" label="oualidbaba2005@gmail.com" />
+          <ContactLink href={cvPath} label="download cv" />
+          <ContactLink href="https://www.linkedin.com/in/oualid-baba-2b29412a4" label="linkedin" />
+          <ContactLink href="tel:+212715033808" label="+212 7 15 03 38 08" />
+        </div>
+      </Reveal>
+
+      <div className="select-none py-16 text-center font-mono text-[10px] leading-tight text-white/[0.05]">
+        <div>-------------------------------------------------------------</div>
+        <div>oualid baba * engineering student * ensa marrakech</div>
+        <div>-------------------------------------------------------------</div>
+      </div>
+
+      <footer className="mt-0 flex flex-col items-center justify-between gap-6 border-t border-white/[0.08] pb-12 pt-8 md:flex-row">
+        <span className="font-mono text-xs text-white/20">(c) 2026 oualid baba</span>
+        <div className="flex items-center gap-5 text-white/30">
+          <a className="transition-colors hover:text-white" href={cvPath} target="_blank" rel="noreferrer" aria-label="cv">
+            <Icon name="external" />
+          </a>
+          <a
+            className="transition-colors hover:text-white"
+            href="https://www.linkedin.com/in/oualid-baba-2b29412a4"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="linkedin"
+          >
+            <Icon name="linkedin" />
+          </a>
+          <a className="transition-colors hover:text-white" href="mailto:oualidbaba2005@gmail.com" aria-label="mail">
+            <Icon name="mail" />
+          </a>
+          <a className="transition-colors hover:text-white" href="tel:+212715033808" aria-label="phone">
+            <Icon name="external" />
+          </a>
+        </div>
+        <span className="font-mono text-xs text-white/20">crafted with precision</span>
+      </footer>
+    </section>
+  );
+}
+
+export default function PortfolioPage() {
+  return (
+    <>
+      <GlobalStyles />
+      <main className="portfolio-shell">
+        <div className="noise-overlay" />
+        <ScrollProgress />
+        <CustomCursor />
+        <Hero />
+        <Projects />
+        <Skills />
+        <About />
+        <Contact />
+      </main>
+    </>
   );
 }
