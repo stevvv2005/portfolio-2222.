@@ -184,7 +184,7 @@ function GlobalStyles() {
       }
 
       .section-label {
-        color: rgba(255,255,255,0.3);
+        color: rgba(255,91,18,0.72);
         font-family: 'JetBrains Mono', monospace;
         font-size: 11px;
         letter-spacing: 0.18em;
@@ -237,13 +237,13 @@ function GlobalStyles() {
         letter-spacing: 0.01em;
       }
 
-      .top-nav a:hover { color: #fff; }
+      .top-nav a:hover { color: #ff6b1a; }
 
       .cv-btn {
-        background: #fff;
+        background: #ff5b12;
         border: none;
         border-radius: 9999px;
-        color: #000;
+        color: #fff;
         cursor: none;
         display: inline-flex;
         font-family: 'Readex Pro', system-ui, sans-serif;
@@ -256,7 +256,7 @@ function GlobalStyles() {
         white-space: nowrap;
       }
 
-      .cv-btn:hover { background: #e5e5e5; }
+      .cv-btn:hover { background: #ff7f32; }
     `;
     document.head.appendChild(style);
     return () => {
@@ -352,18 +352,7 @@ function ScrollProgress() {
     };
   }, []);
 
-  return <div className="fixed left-0 top-0 z-[100] h-px bg-white" style={{ width: `${progress}%` }} />;
-}
-
-function LogoMark() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="1" y="1" width="11" height="11" stroke="white" strokeWidth="1.5" />
-      <rect x="16" y="1" width="11" height="11" stroke="white" strokeWidth="1.5" />
-      <rect x="1" y="16" width="11" height="11" stroke="white" strokeWidth="1.5" />
-      <rect x="16" y="16" width="11" height="11" fill="white" />
-    </svg>
-  );
+  return <div className="fixed left-0 top-0 z-[100] h-px bg-[#ff5b12]" style={{ width: `${progress}%` }} />;
 }
 
 function Icon({ name }: Readonly<{ name: "github" | "linkedin" | "mail" | "external" | "shield" | "code" | "infinity" }>) {
@@ -425,25 +414,31 @@ function Icon({ name }: Readonly<{ name: "github" | "linkedin" | "mail" | "exter
 
 function Hero() {
   return (
-    <section id="home" className="relative h-screen w-full overflow-hidden bg-black">
+    <section id="home" className="relative h-screen w-full overflow-hidden bg-[#030607]">
       <video
-        className="absolute inset-0 h-full w-full object-cover opacity-70"
+        className="absolute inset-0 h-full w-full object-cover opacity-95"
         autoPlay
         loop
         muted
         playsInline
-        src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260418_063509_7d167302-4fd4-480b-8260-18ab572333d4.mp4"
+        preload="auto"
+        style={{ filter: "contrast(1.12) saturate(1.08) brightness(1.04)" }}
+        src="/videos/firefly-futuristic-ar-hero.mp4"
       />
 
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-b from-transparent to-black" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_34%,rgba(255,121,36,0.16),transparent_28%),linear-gradient(90deg,rgba(3,6,7,0.84)_0%,rgba(3,6,7,0.46)_42%,rgba(3,6,7,0.68)_100%)]" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-56 bg-gradient-to-b from-transparent to-[#030607]" />
 
       <nav className="top-nav anim-nav absolute left-0 right-0 top-0 z-20 flex items-center justify-between gap-4 px-6 pt-6 md:px-10">
         <a
           href="#home"
-          className="magnetic flex shrink-0 items-center gap-3 rounded-full py-3 pl-4 pr-6"
-          style={{ background: "rgba(23,23,23,0.9)", backdropFilter: "blur(14px)" }}
+          className="magnetic flex shrink-0 items-center rounded-full px-6 py-3"
+          style={{
+            background: "rgba(8,14,16,0.78)",
+            backdropFilter: "blur(16px)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
         >
-          <LogoMark />
           <span style={{ color: "#fff", fontSize: 14, fontWeight: 500, letterSpacing: "0.01em" }}>
             oualid.baba
           </span>
@@ -452,8 +447,9 @@ function Hero() {
         <div
           className="hidden md:flex"
           style={{
-            background: "rgba(23,23,23,0.9)",
-            backdropFilter: "blur(14px)",
+            background: "rgba(8,14,16,0.78)",
+            backdropFilter: "blur(16px)",
+            border: "1px solid rgba(255,255,255,0.08)",
             borderRadius: 9999,
             gap: 32,
             padding: "12px 28px",
@@ -482,7 +478,7 @@ function Hero() {
         className="hero-title anim-word-2 absolute font-medium text-white"
         style={{ fontSize: "clamp(64px, 12vw, 12vw)", right: "clamp(16px, 2.5vw, 40px)", top: "38%" }}
       >
-        software
+        <span className="text-[#ff5b12]">software</span>
       </span>
 
       <span
@@ -508,7 +504,7 @@ function Hero() {
       </p>
 
       <div className="anim-stat-1 absolute" style={{ right: "clamp(24px, 6vw, 96px)", textAlign: "right", top: "14%" }}>
-        <div style={{ fontSize: "clamp(36px, 4.5vw, 52px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1 }}>
+        <div style={{ color: "#ff5b12", fontSize: "clamp(36px, 4.5vw, 52px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1 }}>
           5+
         </div>
         <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(11px, 1.1vw, 14px)", fontWeight: 300, marginTop: 4 }}>
@@ -529,7 +525,7 @@ function Hero() {
       </div>
 
       <div className="anim-stat-2 absolute" style={{ bottom: "clamp(80px, 6vw, 96px)", left: "clamp(24px, 5vw, 80px)" }}>
-        <div style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1 }}>
+        <div style={{ color: "#ff5b12", fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1 }}>
           10+
         </div>
         <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(11px, 1.1vw, 14px)", fontWeight: 300, marginTop: 4 }}>
@@ -538,7 +534,7 @@ function Hero() {
       </div>
 
       <div className="anim-stat-3 absolute" style={{ bottom: "clamp(64px, 5vw, 80px)", right: "clamp(24px, 5vw, 80px)", textAlign: "right" }}>
-        <div style={{ fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1 }}>
+        <div style={{ color: "#ff5b12", fontSize: "clamp(32px, 4vw, 48px)", fontWeight: 500, letterSpacing: "-0.03em", lineHeight: 1 }}>
           3e
         </div>
         <div style={{ color: "rgba(255,255,255,0.65)", fontSize: "clamp(11px, 1.1vw, 14px)", fontWeight: 300, marginTop: 4 }}>
@@ -584,7 +580,7 @@ function Projects() {
                 <h3 className="text-2xl font-medium tracking-tight text-white md:text-4xl">{project.name}</h3>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
-                    <span key={tag} className="rounded-full border border-white/10 px-3 py-1 text-[11px] text-white/45">
+                    <span key={tag} className="rounded-full border border-[#ff5b12]/20 px-3 py-1 text-[11px] text-white/45">
                       {tag}
                     </span>
                   ))}
@@ -593,7 +589,7 @@ function Projects() {
               <p className="hidden w-48 text-sm font-light leading-relaxed text-white/50 md:block">{project.description}</p>
               <div className="w-20 shrink-0 text-right md:w-32">
                 <div className="font-mono text-xs text-white/30">{project.year}</div>
-                <div className="mt-3 text-white/40 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white">
+                <div className="mt-3 text-white/40 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[#ff5b12]">
                   <Icon name="external" />
                 </div>
               </div>
@@ -626,6 +622,7 @@ function SkillBar({ name, width, level, index }: Readonly<{ name: string; width:
         <span
           className="block h-px bg-white transition-all duration-1000"
           style={{
+            background: "#ff5b12",
             width: visible ? width : "0%",
             transitionDelay: `${index * 80}ms`,
             transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)",
@@ -765,8 +762,8 @@ function Contact() {
   return (
     <section id="contact" className="bg-black px-6 py-40 text-center md:px-16">
       <Reveal>
-        <div className="mb-12 inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
+        <div className="mb-12 inline-flex items-center gap-2 rounded-full border border-[#ff5b12]/25 px-4 py-2">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-[#ff5b12]" />
           <span className="font-mono text-xs text-white/50">available for internship - 2026</span>
         </div>
 
